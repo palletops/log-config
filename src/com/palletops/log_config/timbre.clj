@@ -134,3 +134,26 @@
             "")
           (or message "")
           (or (timbre/stacktrace throwable "\n" (when nofonts? {})) "")))
+
+;;; # Logging Threshold Fixture
+
+(defn logging-threshold-fixture
+  "Change the logging threshold inside a scope."
+  ([level appender]
+     (fn [f]
+       (let [config @timbre/config]
+         (timbre/set-config! [:appenders appender :min-level] level)
+         (try (f)
+              (finally (timbre/merge-config! config))))))
+  ([level] (logging-threshold-fixture level :standard-out))
+  ([] (logging-threshold-fixture :warn :standard-out)))
+
+(defmacro suppress-logging
+  "Suppress all logging inside the scope of the function."
+  [& body]
+  `(let [config# @timbre/config]
+     (try
+       (doseq [appender# (:keys (:appenders config#))]
+         (timbre/set-config! [:appenders appender# :enabled?] false))
+       ~@body
+       (finally (timbre/merge-config! config#)))))
