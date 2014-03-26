@@ -27,6 +27,19 @@ keyword to log messages on the `:domain` key.  The
 `format-with-domain` timbre formatter will show the domain in
 preference to the namespace if the `:domain` key is set.
 
+## Logging Contexts
+
+Often, the same code is called in multiple contexts, and the log
+message would be improved by adding some of that contextual
+information.  The `with-context` macro allows specifying a data map
+for a dynamic clojure scope.  The `context-msg` timbre middleware adds
+this context map to log messages on the `:context` key.  The
+`format-with-context` timbre formatter will show the context keys and
+value in the log message.
+
+There is also a `format-with-domain-context` that shows both domain
+and context values.
+
 ## Add Log Message Key based on a Var
 
 The `add-var` function returns a timbre middleware to set a log

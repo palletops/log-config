@@ -27,7 +27,7 @@
             "log message doesn't contain context"))
       (testing "with context setting middleware"
         (is (re-find
-             #":m 1\n$"
+             #":m 1"
              (logging-to-string
               (with-context {:m 1}
                 (log (assoc config :middleware [(add-var :context #'v)])

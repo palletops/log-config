@@ -47,14 +47,43 @@
 
 
 ;;; # Context in Log Messages
+(def ^{:dynamic true :doc "Thread specific context"}
+  *context* nil)
+
+(defn context
+  "Return the current context."
+  []
+  *context*)
+
+(defmacro with-total-context
+  "Execute body within the given context."
+  [context & body]
+  `(binding [*context* context]
+     ~@body))
+
+(defmacro with-context
+  "Execute body with the given context merged onto the current context."
+  [context & body]
+  `(binding [*context* (merge *context* ~context)]
+     ~@body))
+
+(def context-msg
+  "Add context to log messages on the :context key"
+  (add-var :context #'*context*))
+
 (defn format-with-context
-  "A formatter that appends the values in the :context key."
-  [{:keys [level throwable message timestamp hostname ns] :as ev}
+  "A formatter that shows values in the :context key."
+  [{:keys [level throwable message timestamp hostname ns context] :as ev}
    ;; Any extra appender-specific opts:
    & [{:keys [nofonts?] :as appender-fmt-output-opts}]]
-  (str (apply timbre/default-fmt-output-fn ev appender-fmt-output-opts)
-       (if-let [context (:context ev)]
-         (str " " (join ", " (map (fn [[k v]] (str k " " v)) context))))))
+  (format "%s %s %s [%s]%s - %s%s"
+          timestamp hostname
+          (-> level name upper-case)
+          (if (seq context)
+            (str " " (join " " (map (fn [[k v]] (str k " " v)) context)))
+            "")
+          ns (or message "")
+          (or (timbre/stacktrace throwable "\n" (when nofonts? {})) "")))
 
 ;;; # Domain logging
 
@@ -72,12 +101,30 @@
   (add-var :domain #'*domain*))
 
 (defn format-with-domain
-  "A formatter that show domain rather than ns when it is set."
+  "A formatter that shows domain rather than ns when it is set."
   [{:keys [level throwable message timestamp hostname ns domain]}
    & [{:keys [nofonts?] :as appender-fmt-output-opts}]]
   ;; <timestamp> <hostname> <LEVEL> [<domain or ns>] - <message> <throwable>
   (format "%s %s %s [%s] - %s%s"
           timestamp hostname
-          (-> (or domain level) name upper-case)
-          ns (or message "")
+          (-> level name upper-case)
+          (or (and domain (name domain)) ns)
+          (or message "")
+          (or (timbre/stacktrace throwable "\n" (when nofonts? {})) "")))
+
+;;; # Formatter for Context and Domain
+(defn format-with-domain-context
+  "A formatter that shows domain rather than ns when it is set, and
+  adds any :context values."
+  [{:keys [level throwable message timestamp hostname ns domain context]}
+   & [{:keys [nofonts?] :as appender-fmt-output-opts}]]
+  ;; <timestamp> <hostname> <LEVEL> [<domain or ns>] - <message> <throwable>
+  (format "%s %s %s [%s]%s - %s%s"
+          timestamp hostname
+          (-> level name upper-case)
+          (or (and domain (name domain)) ns)
+          (if (seq context)
+            (str " " (join " " (map (fn [[k v]] (str k " " v)) context)))
+            "")
+          (or message "")
           (or (timbre/stacktrace throwable "\n" (when nofonts? {})) "")))
