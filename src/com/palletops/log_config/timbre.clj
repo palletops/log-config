@@ -67,6 +67,12 @@
   `(binding [*context* (merge *context* ~context)]
      ~@body))
 
+(defmacro with-context-update
+  "Execute body with the given context merged onto the current context."
+  [[path f & args] & body]
+  `(binding [*context* (update-in *context* ~path ~f ~@args)]
+     ~@body))
+
 (def context-msg
   "Add context to log messages on the :context key"
   (add-var :context #'*context*))

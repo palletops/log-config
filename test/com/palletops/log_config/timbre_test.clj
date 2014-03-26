@@ -2,10 +2,7 @@
   (:require
    [clojure.test :refer :all]
    [taoensso.timbre :refer [example-config info log]]
-   [com.palletops.log-config.timbre
-    :refer [add-var context-msg domain-msg format-with-context
-            format-with-domain format-with-domain-context
-            with-domain with-context]]))
+   [com.palletops.log-config.timbre :refer :all]))
 
 (def v {:m 1})
 
@@ -55,3 +52,7 @@
                                    {:fmt-output-fn format-with-domain-context
                                     :middleware [context-msg domain-msg]})
                             :info "something"))))))))
+
+(deftest with-context-update-test
+  (with-context-update [[:x] (fnil conj []) :y]
+    (is (= {:x [:y]} (context)))))
