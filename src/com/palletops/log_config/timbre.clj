@@ -58,7 +58,7 @@
 (defmacro with-total-context
   "Execute body within the given context."
   [context & body]
-  `(binding [*context* context]
+  `(binding [*context* ~context]
      ~@body))
 
 (defmacro with-context
