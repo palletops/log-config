@@ -8,18 +8,20 @@
 
   It is advised that the channel, ch, is non-blocking.
 
-  A config map can be provided here as an argument, or as
-  an :async-channel key in :shared-appender-config.
+  A config map can be provided here as an argument. In addition to the
+  standard appender configuration options, the `:kws` option allows
+  specification of a sequence of keys to forward to the channel,
+  defaults to [:hostname :ns :args :throwable :profile-stats].
 
   (make-async-channel-appender {:enabled? true})"
   [ch appender-opts]
-  (let [default-opts {:enabled? true}]
-    (merge default-opts
-           appender-opts
+  (let [default-opts {:enabled? true :kws [:hostname :ns :args :throwable
+                                           :profile-stats]}
+        opts (merge default-opts appender-opts)]
+    (merge opts
            {:fn
             (fn [{:keys [] :as apfn-args}]
-              (put! ch (select-keys apfn-args [:hostname :ns :args :throwable
-                                               :profile-stats])))})))
+              (put! ch (select-keys apfn-args (:kws opts))))})))
 
 (defn- add-to-memory
   "Add `msg` to the sequence in the atom `memory`, limiting the
