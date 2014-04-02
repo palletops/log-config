@@ -56,3 +56,17 @@
 (deftest with-context-update-test
   (with-context-update [[:x] (fnil conj []) :y]
     (is (= {:x [:y]} (context)))))
+
+(defn format-with-tags
+  [{:keys [tags]} & []]
+  (pr-str tags))
+
+(deftest tags-test
+  (testing "tags"
+    (is (= (str (pr-str #{:a :b}) \newline)
+           (with-out-str
+             (with-tags #{:a :b}
+               (log (merge example-config
+                           {:fmt-output-fn format-with-tags
+                            :middleware [tags-msg]})
+                    :info "something")))))))

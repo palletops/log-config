@@ -42,6 +42,12 @@ value in the log message.
 There is also a `format-with-domain-context` that shows both domain
 and context values.
 
+## Tags for Filtering Log Messages
+
+To allow domain level filtering of log messages, use the `with-tags`
+macro, specifying a set of keywords.  The `tags-msg` timbre middleware
+adds this tag set on the `:tags` key.
+
 ## Add Log Message Key based on a Var
 
 The `add-var` function returns a timbre middleware to set a log

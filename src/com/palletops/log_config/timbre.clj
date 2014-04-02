@@ -91,15 +91,40 @@
           ns (or message "")
           (or (timbre/stacktrace throwable "\n" (when nofonts? {})) "")))
 
+;;; # Tags
+
+;;; Tags provide a set of keywords on which log messages can be filtered.  The
+;;; `tags-message` middleware is used to add them to the log message.
+
+(def ^:dynamic *tags* nil)
+
+(defmacro with-tags
+  "Set the tags for any log messages in body."
+  [tags & body]
+  `(binding [*tags* ~tags]
+     (assert (set? *tags*) "The tags must be a set of Named items.")
+     ~@body))
+
+(def tags-msg
+  "Add tags to log messages on the :tags key"
+  (add-var :tags #'*tags*))
+
 ;;; # Domain logging
 
-;;; Domain logging is not tied to namespaces.
+;;; Domain logging adds a keyword which is used as an alternative to
+;;; the namespace.
+
+;;; The `format-with-domain` timbre formatter will show the domain in
+;;; preference to the namespace.
+
 (def ^:dynamic *domain* nil)
 
 (defmacro with-domain
   "Set the domain for any log messages in body."
   [domain & body]
   `(binding [*domain* ~domain]
+     (assert (or (string? *domain*) (keyword? *domain*) (symbol? *domain*))
+             "The domain must be a string, keyword or symbol.")
      ~@body))
 
 (def domain-msg
