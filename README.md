@@ -70,6 +70,13 @@ To use it, add an entry in your timbre configuration `:appenders`:
 
 See [`taoensso.timbre.tools.logging`](http://ptaoussanis.github.io/timbre/taoensso.timbre.tools.logging.html).
 
+## Logging in Tests
+
+Sometimes it is useful to be able to modify log levels in tests.  We
+provide the `logging-threshold-fixture` function for use as a
+`clojure.test` fixture, and `suppress-logging` which provides a scope
+where all configured appenders are disabled.
+
 ## License
 
 Copyright © 2014 Hugo Duncan
