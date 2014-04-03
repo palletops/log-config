@@ -1,6 +1,6 @@
 {:dev {:test-selectors {:default (complement :slf4j)
                         :slf4j :slf4j}
-       :plugins [[lein-pallet-release "0.1.4"]],
+       :plugins [[lein-pallet-release "RELEASE"]],
        :pallet-release
        {:url "https://pbors:${GH_TOKEN}@github.com/palletops/log-config.git",
         :branch "master"}}
