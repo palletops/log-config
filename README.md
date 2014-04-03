@@ -5,7 +5,7 @@ A Clojure library designed to help configure your [timbre][timbre] logging.
 The `com.palletops.log-config.timbre` namespace provides timbre
 middleware and formatters.
 
-Add `[com.palletops/log-config "0.1.1"]` to your dependencies.
+Add `[com.palletops/log-config "0.1.2"]` to your dependencies.
 
 ## Filtering Levels by Namespace
 
@@ -42,6 +42,12 @@ value in the log message.
 There is also a `format-with-domain-context` that shows both domain
 and context values.
 
+## Tags for Filtering Log Messages
+
+To allow domain level filtering of log messages, use the `with-tags`
+macro, specifying a set of keywords.  The `tags-msg` timbre middleware
+adds this tag set on the `:tags` key.
+
 ## Add Log Message Key based on a Var
 
 The `add-var` function returns a timbre middleware to set a log
@@ -69,6 +75,13 @@ To use it, add an entry in your timbre configuration `:appenders`:
 ### Logging java logging to timbre
 
 See [`taoensso.timbre.tools.logging`](http://ptaoussanis.github.io/timbre/taoensso.timbre.tools.logging.html).
+
+## Logging in Tests
+
+Sometimes it is useful to be able to modify log levels in tests.  We
+provide the `logging-threshold-fixture` function for use as a
+`clojure.test` fixture, and `suppress-logging` which provides a scope
+where all configured appenders are disabled.
 
 ## License
 
