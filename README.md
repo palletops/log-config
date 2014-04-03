@@ -5,7 +5,7 @@ A Clojure library designed to help configure your [timbre][timbre] logging.
 The `com.palletops.log-config.timbre` namespace provides timbre
 middleware and formatters.
 
-Add `[com.palletops/log-config "0.1.1"]` to your dependencies.
+Add `[com.palletops/log-config "0.1.2"]` to your dependencies.
 
 ## Filtering Levels by Namespace
 
