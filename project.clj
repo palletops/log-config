@@ -1,4 +1,4 @@
-(defproject com.palletops/log-config "0.1.3-SNAPSHOT"
+(defproject com.palletops/log-config "0.1.3"
   :description "Log appenders and middleware for timbre"
   :url "http://github.com/palletops/log-config"
   :license {:name "Eclipse Public License"
