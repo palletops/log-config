@@ -1,3 +1,9 @@
+## 0.1.4
+
+- Add test and check aliases
+
+- Fix typo in suppress-logging macro
+
 ## 0.1.3
 
 - Add dynamic wrapping of vars

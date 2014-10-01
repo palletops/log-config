@@ -178,7 +178,7 @@
   [& body]
   `(let [config# @timbre/config]
      (try
-       (doseq [appender# (:keys (:appenders config#))]
+       (doseq [appender# (keys (:appenders config#))]
          (timbre/set-config! [:appenders appender# :enabled?] false))
        ~@body
        (finally (timbre/merge-config! config#)))))
